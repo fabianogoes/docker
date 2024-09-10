@@ -1,35 +1,31 @@
-version: "3.9"
+version: "3.8"
 
 services:
   postgres:
     container_name: postgres
-    image: postgres:12
+    image: postgres:12.8
+    restart: always
     environment:
-      POSTGRES_PASSWORD: pass
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=dev
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data 
     networks:
-      - postgres-network
+      - mysql-compose-network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "user@pgadmin.com"
-      PGADMIN_DEFAULT_PASSWORD: "PgAdmin2024!"
+  adminer:
+    image: adminer
     ports:
-      - "5000:80"
-    depends_on:
-      - postgres
+      - 8080:8080
     networks:
-      - postgres-network      
-
-volumes:
-  pgdata: {}
+      - mysql-compose-network
 
 networks: 
-  postgres-network:
+  mysql-compose-network:
     driver: bridge
+
+volumes:
+  db:
